@@ -60,7 +60,7 @@ if __name__=='__main__':
                 finally:raise SystemExit(1)
             try:
                 from app_notice import NoticeIntegrityError
-                message=(str(sys.exc_info()[1])+'\n请从作者提供的完整原始软件包恢复声明和签名文件。')if isinstance(sys.exc_info()[1],NoticeIntegrityError)else error[-2500:]
+                message=(str(sys.exc_info()[1])+'\n请从作者提供的完整原始软件包恢复声明与校验清单。')if isinstance(sys.exc_info()[1],NoticeIntegrityError)else error[-2500:]
                 __import__('ctypes').windll.user32.MessageBoxW(None,message,'蛇对蛇助手启动失败',16)
             except Exception:pass
         raise

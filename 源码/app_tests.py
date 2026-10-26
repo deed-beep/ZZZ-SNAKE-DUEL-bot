@@ -13,11 +13,11 @@ CATALOG=read_json(BASE/'parameter_catalog.json')
 _scratch=None
 
 class SoftwareTests(unittest.TestCase):
-    def test_notice_signature_rejects_missing_and_modified_declaration(self):
+    def test_notice_manifest_rejects_missing_and_modified_declaration(self):
         import shutil
         from app_notice import verify_at,NOTICE_NAME,NoticeIntegrityError
         folder=_scratch/'notice_copy';resources=folder/'resources';(resources/'app_assets').mkdir(parents=True)
-        for name in('notice_manifest.json','notice_manifest.sig'):shutil.copy2(BASE/'app_assets'/name,resources/'app_assets'/name)
+        shutil.copy2(BASE/'app_assets/notice_manifest.json',resources/'app_assets/notice_manifest.json')
         original=(BASE.parent/NOTICE_NAME if getattr(sys,'frozen',False)else BASE/NOTICE_NAME).read_bytes()
         # In a portable build the visible declaration is next to the exe.
         if getattr(sys,'frozen',False):original=(Path(sys.executable).parent/NOTICE_NAME).read_bytes()
@@ -27,14 +27,19 @@ class SoftwareTests(unittest.TestCase):
         with self.assertRaises(NoticeIntegrityError):verify_at(folder,resources,False)
         target.write_bytes(original+b'\nchanged')
         with self.assertRaises(NoticeIntegrityError):verify_at(folder,resources,False)
-        target.write_bytes(original);signature=resources/'app_assets/notice_manifest.sig';data=signature.read_bytes();signature.write_bytes(bytes([data[0]^1])+data[1:])
-        with self.assertRaises(NoticeIntegrityError):verify_at(folder,resources,False)
 
-    def test_windows_signature_verification_and_protected_resources(self):
-        from app_notice import signature_valid,verify_distribution
-        payload=(BASE/'app_assets/notice_manifest.json').read_bytes();signed=(BASE/'app_assets/notice_manifest.sig').read_bytes()
-        self.assertTrue(signature_valid(payload,signed));self.assertFalse(signature_valid(payload+b' ',signed));self.assertFalse(signature_valid(payload,signed[:-1]))
-        self.assertIn('软件作者：101010',verify_distribution())
+    def test_manifest_detects_modified_protected_resource(self):
+        from app_notice import verify_at,NOTICE_NAME,NoticeIntegrityError
+        folder=_scratch/'resource_copy';resources=folder/'resources';(resources/'app_assets').mkdir(parents=True)
+        notice=(Path(sys.executable).parent/NOTICE_NAME if getattr(sys,'frozen',False)else BASE/NOTICE_NAME).read_bytes()
+        (folder/NOTICE_NAME).write_bytes(notice)
+        target=resources/'engine/assets/probe.bin';target.parent.mkdir(parents=True);target.write_bytes(b'original')
+        manifest={'schema':1,'author':'101010','notice_file':NOTICE_NAME,'notice_sha256':hashlib.sha256(notice).hexdigest(),
+            'resources':{'engine/assets/probe.bin':hashlib.sha256(b'original').hexdigest()}}
+        (resources/'app_assets/notice_manifest.json').write_text(json.dumps(manifest,ensure_ascii=False),encoding='utf8')
+        self.assertIn('101010',verify_at(folder,resources,True))
+        target.write_bytes(b'modified')
+        with self.assertRaises(NoticeIntegrityError):verify_at(folder,resources,True)
 
     def test_notice_watchdog_stops_controller_without_waiting_for_focus(self):
         import app_notice,app_runtime_control as control

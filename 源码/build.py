@@ -7,8 +7,8 @@ from app_paths import write_json
 def main():
     root=Path(__file__).resolve().parent
     write_json(root/'parameter_catalog.json',build_catalog(root/'engine'))
-    from sign_notice import sign_release_assets
-    sign_release_assets(root)
+    from notice_manifest import build_manifest
+    build_manifest(root)
     args=[sys.executable,'-m','PyInstaller','--noconfirm','--onedir','--windowed','--noupx',
           '--name','SnakeAssistant25','--distpath',str(root/'dist'),'--workpath',str(root/'build'),
           '--specpath',str(root),'--icon',str(root/'app.ico'),'--manifest',str(root/'app.manifest'),

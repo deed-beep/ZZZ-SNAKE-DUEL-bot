@@ -4,12 +4,12 @@
 
 ![Python](https://img.shields.io/badge/Python-3.9-3776AB?logo=python&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11%20x64-0078D4?logo=windows&logoColor=white)
-![Version](https://img.shields.io/badge/Version-1.0.2-2ea44f)
+![Version](https://img.shields.io/badge/Version-1.0.3-2ea44f)
 ![License](https://img.shields.io/badge/License-仅供学习交流-orange)
 
-> **软件版本** 1.0.4 ｜ **引擎基线** 2.5（第 188 局代码）｜ **作者** 101010 ｜ **平台** Windows 10 / 11 x64
+> **软件版本** 1.0.3 ｜ **引擎基线** 2.5（第 188 局代码）｜ **作者** 101010 ｜ **平台** Windows 10 / 11 x64
 >
-> 仅供学习交流。请保留 exe 同级的 [《使用声明与免责声明.txt》](使用声明与免责声明.txt) 及随包签名材料，缺失或被修改会阻止运行。完整机制见 [《声明保护说明.md》](声明保护说明.md)。
+> 仅供学习交流。请保留 exe 同级的 [《使用声明与免责声明.txt》](使用声明与免责声明.txt) 及随包哈希清单，缺失或被修改会阻止运行。完整机制见 [《声明保护说明.md》](声明保护说明.md)。
 
 ![主界面](docs/images/main-window.png)
 
@@ -39,7 +39,7 @@
 - **不改原引擎**：34 个实际运行模块与 5 个识别素材保持原文件哈希，桌面外壳只在加载时接入画面适配、参数与停止控制，不会修改原来的 2.5 目录。
 - **独立运行**：exe 与 `_internal` 一起分发，目标机器不需要安装 Python，也不需要打开 VS Code。
 - **分辨率自适应**：默认按游戏窗口客户区定位，1280×720 至 3840×2160 与窗口模式均可使用。
-- **源码可查**：源码随包提供；启动与运行中都会校验声明签名与引擎哈希。
+- **源码可查**：源码随包提供；启动与运行中都会校验声明与引擎哈希。
 
 ## 系统要求
 
@@ -47,7 +47,7 @@
 | --- | --- |
 | 操作系统 | Windows 10 / 11，64 位 |
 | 虚拟手柄 | ViGEmBus 1.22.0，首次使用需安装并重启 |
-| 运行权限 | 建议以管理员身份运行；1.0.2 已实机验证该方式下配置保存正常 |
+| 运行权限 | 建议以管理员身份运行；已在实机验证该方式下配置保存正常 |
 | 游戏画面 | 需保持可见并正常渲染；最小化或被其他窗口遮住时不保证画面识别 |
 | 源码环境 | Python 3.9 x64、Tkinter，以及 [源码/requirements.txt](源码/requirements.txt) 中的依赖 |
 
@@ -169,7 +169,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Tkinter 随常见 Windows Python 发行版提供；Conda 环境需要有 tk。`源码` 目录内的《使用声明与免责声明.txt》与 `app_assets/notice_manifest.*` 缺一不可，否则启动校验会失败。
+Tkinter 随常见 Windows Python 发行版提供；Conda 环境需要有 tk。`源码` 目录内的《使用声明与免责声明.txt》与 `app_assets/notice_manifest.json` 缺一不可，否则启动校验会失败。
 
 ### 重新打包
 
@@ -178,9 +178,9 @@ cd 源码
 python build.py
 ```
 
-产物在 `dist/SnakeAssistant25`。从 1.0.2 开始，作者需通过 `SNAKE25_SIGNING_DIR` 指向另行保存的签名私钥目录，并在原 Windows 账户下构建；构建签名还需要 OpenSSL。
+产物在 `dist/SnakeAssistant25`。`build.py` 会先重建 `parameter_catalog.json` 与哈希清单，再调用 PyInstaller，不再需要私钥、OpenSSL 或特定 Windows 账户。
 
-私钥不随便携软件包发布，不能仅凭软件包重新签署修改后的声明或资源。脚本会显式收集 Conda 中的 ffi/Tcl/Tk 库，以及动态加载引擎用到的依赖。构建方式参见 [PyInstaller 官方说明](https://www.pyinstaller.org/en/stable/usage.html)。
+修改引擎、参数目录或图标后，单独运行 `python notice_manifest.py` 也能让校验重新通过。脚本会显式收集 Conda 中的 ffi/Tcl/Tk 库，以及动态加载引擎用到的依赖。构建方式参见 [PyInstaller 官方说明](https://www.pyinstaller.org/en/stable/usage.html)。
 
 ### 离线验收
 
@@ -197,13 +197,12 @@ ZZZ-SNAKE-DUEL-bot/
 ├─ 源码/                     # Python 3.9 源码，可 python app.py 直接运行
 │  ├─ app_*.py               # 桌面外壳：GUI、截图适配、设置、托盘、策略、测试
 │  ├─ engine/                # 2.5 原引擎（34 个模块 + 5 个识别素材，哈希受保护）
-│  ├─ app_assets/            # 图标素材、声明清单与签名
+│  ├─ app_assets/            # 图标素材与哈希清单
 │  ├─ baseline.json          # 引擎模块 SHA-256 基线
 │  ├─ parameter_catalog.json # 6502 项参数目录
-│  ├─ app_notice_anchor.py   # 公开验证锚点（不含私有材料）
+│  ├─ notice_manifest.py     # 重建哈希清单
 │  ├─ build.py               # 打包入口
 │  ├─ release.py             # 生成交付目录与文件校验
-│  ├─ sign_notice.py         # 作者签名步骤
 │  └─ requirements.txt
 ├─ 第三方许可/               # 各依赖的许可原文
 ├─ 驱动安装包/               # 仅保留安装说明、来源与校验；exe 见 Releases
@@ -214,7 +213,7 @@ ZZZ-SNAKE-DUEL-bot/
 ├─ 策略与参数说明.md
 ├─ 声明保护说明.md
 ├─ 使用声明与免责声明.txt
-├─ 更新说明_1.0.1.md / 更新说明_1.0.2.md
+├─ 更新说明_1.0.1.md ～ 更新说明_1.0.3.md
 ├─ CHANGELOG.md
 ├─ LICENSE
 └─ runtime_versions.json
@@ -224,11 +223,13 @@ ZZZ-SNAKE-DUEL-bot/
 
 ## 完整性校验
 
-程序启动时会比对 [源码/baseline.json](源码/baseline.json) 与 [源码/app_assets/notice_manifest.json](源码/app_assets/notice_manifest.json)：
+程序启动、点击开始运行以及运行中的后台线程，都会按 [源码/app_assets/notice_manifest.json](源码/app_assets/notice_manifest.json) 校验：
 
-- 34 个引擎模块、5 个识别素材、参数目录与图标；
 - 声明正文《使用声明与免责声明.txt》；
-- 运行中每约 1.5 秒后台复查一次，异常时释放手柄并停止。
+- 34 个引擎模块、5 个识别素材、参数目录与图标；
+- 运行中每约 1.5 秒复查一次，异常时释放手柄并停止。
+
+从 1.0.3 起清单使用纯 SHA-256，不再有 RSA 签名，也不再需要私钥：修改受保护文件后运行 `python 源码/notice_manifest.py` 重建清单即可。清单与程序同包，能改程序的人也能改清单，因此它只防误删、误改和随手替换。
 
 这些哈希按**原始字节**计算，任何换行转换都会导致校验失败，因此 [.gitattributes](.gitattributes) 对相关路径关闭了行尾规范化。提交或合并前可运行：
 
@@ -243,7 +244,7 @@ CI 会在 Windows 与 Linux 检出后各跑一次，确保跨平台克隆后字�
 - 本软件仅供**学习、研究与交流**，作者不对使用后果作任何担保；完整条款见 [《使用声明与免责声明.txt》](使用声明与免责声明.txt)。
 - 自动化操作可能与游戏或平台的用户协议冲突，**存在账号被处罚的风险**，请自行判断是否使用。
 - 请勿将本软件用于商业用途、代练代打或任何违反法律法规的场景。
-- 声明签名只能提高删改门槛，不能保证绝对防破解，见 [《声明保护说明.md》](声明保护说明.md)。
+- 哈希清单只能防误删、误改，不能保证绝对防破解，见 [《声明保护说明.md》](声明保护说明.md)。
 
 ## 许可
 
@@ -266,4 +267,4 @@ CI 会在 Windows 与 Linux 检出后各跑一次，确保跨平台克隆后字�
 
 ## 更新日志
 
-当前版本 1.0.2 的变更见 [CHANGELOG.md](CHANGELOG.md)。
+当前版本 1.0.3 的变更见 [CHANGELOG.md](CHANGELOG.md)。

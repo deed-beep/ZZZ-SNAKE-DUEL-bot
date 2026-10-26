@@ -2,7 +2,7 @@ from pathlib import Path
 import os,sys,json,tempfile,uuid
 
 APP_NAME='蛇对蛇助手 2.5'
-APP_VERSION='1.0.2'
+APP_VERSION='1.0.3'
 BASE=Path(getattr(sys,'_MEIPASS',Path(__file__).resolve().parent))
 ENGINE=BASE/'engine'
 
