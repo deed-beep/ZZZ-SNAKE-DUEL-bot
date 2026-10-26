@@ -209,7 +209,7 @@ ZZZ-SNAKE-DUEL-bot/
 ├─ 驱动安装包/               # 仅保留安装说明、来源与校验；exe 见 Releases
 ├─ docs/images/              # README 截图
 ├─ tools/verify_integrity.py # 哈希完整性校验脚本
-├─ .github/workflows/ci.yml  # 语法与哈希校验
+├─ .github/workflows/        # ci.yml 校验；release.yml 由 tag 生成草稿 Release
 ├─ 使用说明.md
 ├─ 策略与参数说明.md
 ├─ 声明保护说明.md

@@ -1,0 +1,37 @@
+name: 发布草稿
+
+# 推送 v* 标签时触发：校验受保护文件，并创建一份草稿 Release。
+# 可运行包（含 _internal、exe、驱动）不在仓库里，构建签名依赖作者本机
+# 私钥，Actions 无法代劳，需要手动把 zip 拖到草稿里再发布。
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: 校验基线、声明清单与参数目录
+        run: python tools/verify_integrity.py
+
+      - name: 创建草稿 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          name: 蛇对蛇助手 2.5 · ${{ github.ref_name }}
+          generate_release_notes: true
+          body: |
+            完整程序请下载下方附件 `SnakeAssistant25-*.zip`，解压后运行 `SnakeAssistant25.exe`。
+            首次使用需先安装包内 ViGEmBus 1.22.0 并重启。仅供学习交流。
