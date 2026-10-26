@@ -1,0 +1,40 @@
+name: 完整性检查
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: "utf-8"
+
+jobs:
+  verify:
+    name: 语法与哈希校验（${{ matrix.os }}）
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # 同时验证 Windows 与 Linux 检出：受保护文件在两种平台下都必须
+        # 与签名清单逐字节一致（.gitattributes 已关闭这些路径的换行转换）
+        os: [windows-latest, ubuntu-latest]
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+
+      - name: 语法编译检查
+        # 用 . 而不是中文目录名，避免 Windows runner 控制台编码差异
+        run: python -m compileall -q .
+
+      - name: 校验基线、声明清单与参数目录
+        run: python tools/verify_integrity.py

@@ -1,0 +1,10 @@
+{
+  "Python": "3.9.25 (main, Nov  3 2025, 22:44:01) [MSC v.1929 64 bit (AMD64)]",
+  "libraries": {
+    "numpy": "2.0.2",
+    "opencv-python": "4.13.0.92",
+    "Pillow": "11.3.0",
+    "mss": "10.2.0",
+    "vgamepad": "0.1.0"
+  }
+}

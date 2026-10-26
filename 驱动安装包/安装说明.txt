@@ -1,0 +1,25 @@
+ViGEmBus虚拟手柄驱动安装说明
+
+此目录包含Nefarius官方发布的原版安装包：
+ViGEmBus_1.22.0_x64_x86_arm64.exe
+
+首次使用蛇对蛇助手的电脑：
+1. 将整个软件ZIP完整解压到一个文件夹。
+2. 关闭正在使用虚拟手柄的程序，双击上面的安装包，按提示允许管理员权限并完成安装。
+3. 如果安装程序要求重启电脑，请先重启。
+4. 打开游戏进入匹配大厅，再运行SnakeAssistant25.exe，选择游戏窗口并点击开始。
+
+已安装且能正常使用ViGEmBus的电脑可跳过驱动安装。软件不会自动或静默运行安装包。
+请保留软件根目录的使用声明与免责声明及_internal文件夹。
+
+官方发布页：
+https://github.com/nefarius/ViGEmBus/releases/tag/v1.22.0
+官方安装说明：
+https://docs.nefarius.at/projects/ViGEm/How-to-Install/
+
+本安装包保持官方原文件，Windows Authenticode数字签名已验证有效。
+发布者：Nefarius Software Solutions e.U.
+SHA256：89220a7865076b342892f98865f3499fb7c4cfd673159e89d352c360fd014c6a
+来源和校验详情见本目录“来源与校验.json”，许可条款见“LICENSE_ViGEmBus.txt”。
+
+驱动由其原作者提供，并非101010开发；其版权、许可和支持政策独立适用。

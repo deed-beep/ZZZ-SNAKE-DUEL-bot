@@ -1,0 +1,67 @@
+# ============================================================
+# 蛇对蛇助手 2.5 — 仓库只保存「源码 + 文档」
+# 可运行程序、驱动安装包与验收截图一律走 GitHub Releases。
+# ============================================================
+
+# ---- 打包 / 构建产物 ----
+/_internal/
+/dist/
+/build/
+/源码/dist/
+/源码/build/
+/源码/ui_checks/
+/源码/acceptance_data/
+/源码/driver_bundle/
+*.spec
+*.exe
+*.msi
+*.pdb
+*.zip
+*.7z
+
+# ---- 交付校验与实机验收记录 ----
+# 含游戏画面、逐帧日志与实际运行配置，不公开
+/验收记录/
+/文件校验.json
+/final_packaged_report.json
+/final_packaged_ui.png
+/源码/*_report.json
+
+# ---- 运行数据 / 日志 ----
+/records/
+/logs/
+/frames_dump/
+*.log
+*.jsonl
+
+# ---- 签名材料：绝不能提交 ----
+/.snake25_signing/
+**/notice_private.*
+*.dpapi
+*.pem
+*.key
+*.pfx
+*.p12
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# ---- 本地覆盖配置 ----
+*.local.json
+/config.local.json
